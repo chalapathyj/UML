@@ -1,4 +1,8 @@
 class InventoryItem:
+    items = {'001': {'category': 'fruits', 'name': 'apple', 'quantity': '10',          'ecquantity': '20'},
+             '002': {'category': 'vegetables', 'name': 'carrot', 'quantity': '25', 'ecquantity': '60'
+                     },
+             }
 
     def __init__(self, itemId, name, category, actQuantity, ecoOrderQuantity):
         self. itemId = itemId
@@ -6,12 +10,16 @@ class InventoryItem:
         self.category = category
         self.actQuantity = actQuantity
         self.ecoOrderQuantity = ecoOrderQuantity
+        self.items[itemId] = {'category': category, 'name': name,
+                              'quantity': actQuantity, 'ecquantity': ecoOrderQuantity}
 
-    def getQuantity(self):
-        
+    def getQuantity(self, itmid):
+        for x, y in self.items[itmid].items():
+            print(x, y)
 
     def setQuantity(self):
-        pass
+        self.items[itemId] = {'category': category, 'name': name,
+                              'quantity': actQuantity, 'ecquantity': ecoOrderQuantity}
 
     def checkQuantity(self):
         pass
