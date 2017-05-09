@@ -137,8 +137,9 @@ class SrClerk(Staff, Notice):
 
 class Inspector(SrClerk):
 
-    def __init__(self, empid, name,):
-        super(Inspector, self).__init__(empid, name)
+    def __init__(self, empid, name, shipmentNumber, supplierName, itemDetails, quantityDetails):
+        super(Inspector, self).__init__(empid, name, shipmentNumber,
+                                        supplierName, itemDetails, quantityDetails)
 
     def inspect(self):
         pass
