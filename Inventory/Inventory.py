@@ -29,8 +29,10 @@ class InventoryItem(Item):
         self.actQuantity = qnty
 
     def checkQuantity(self):
-        print("Quantity left in the inventory for the category %s : %s" %
-              (self.category, self.actQuantity))
+        if int(self.actQuantity) <= 10:
+            print("Quantity left in the inventory for the category %s : %s" %
+                  (self.category, self.actQuantity))
+            return self.category
 
 
 class Notice:
@@ -69,12 +71,13 @@ class Supplier:
 
 
 class PurchaseOrder:
+    poNumber = 34256  # some random number
 
-    def __init__(self, PoNumber, Items, Quantity):
-        self.poNumber = PoNumber
+    def __init__(self, Items, Quantity):
         self._items = Items
         self._quantity = Quantity
         self.orderDate = datetime.date.today()
+        PurchaseOrder.poNumber += 1
 
     @property  # getter
     def items(self):
@@ -88,7 +91,7 @@ class PurchaseOrder:
     def items(self, value):
         self._items = value
 
-    @items.setter
+    @quantity.setter
     def quantity(self, value):
         self._quantity = value
 
@@ -132,7 +135,7 @@ class SrClerk(Staff, Notice):
             self._generateNotice(name, msg)
 
     def verifyShipment(self):
-        self.generateErrorNotice(1)
+        self.generateErrorNotice()
 
 
 class Inspector(SrClerk):
@@ -142,4 +145,67 @@ class Inspector(SrClerk):
                                         supplierName, itemDetails, quantityDetails)
 
     def inspect(self):
+        pass
+
+
+class Shipment:
+
+    def __init__(self, shipmentNumber, itemDetails, quantity):
+        self.shipmentNumber = shipmentNumber
+        self.itemDetails = itemDetails
+        self.quantity = quantity
+
+    def getShipment(self):
+        pass
+
+
+class InventoryClerk(Staff):
+
+    def __init__(self, inventoryName, inventoryId):
+        super(Inspector, self).__init__(inventoryName, inventoryId)
+
+    def checkInventory(self):
+        pass
+
+    def updateInventory(self):
+        pass
+
+# class PurchaseClerk(Staff):
+#     def __init__(self,):
+
+#     def
+#         pass
+
+
+class Bill:
+
+    def __init__(self, billNumber, Date, totalAmt, itemDetails):
+        self.billNumber = billNumber
+        self.Date = Date
+        self.totalAmt = totalAmt
+        self.itemDetails = itemDetails
+
+    def generateBill(self):
+        pass
+
+
+class QualityCriteria:
+
+    def __init__(self, itemNumber, itemName, qualitySpecs):
+        self.itemNumber = itemNumber
+        self.itemName = itemName
+        self.qualitySpecs = qualitySpecs
+
+    def displayQualitySpecs(self):
+        pass
+
+
+class AcceptedItem:
+
+    def __init__(self, itemNumber, itemName, quantity):
+        self.itemNumber = itemNumber
+        self.itemName = itemName
+        self.quantity = quantity
+
+    def updateQuantity(self):
         pass
