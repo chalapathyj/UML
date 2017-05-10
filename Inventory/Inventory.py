@@ -1,51 +1,19 @@
 import datetime
 
 
-class Item:
-
-    def __init__(self, itemId, name):
-        self.itemId = itemId
-        self.name = name
-
-    def add(self):
-        pass
-
-    def item(self):
-        pass
-
-
-class InventoryItem(Item):
-
-    def __init__(self, itemId, name, category, actQuantity='20', ecoOrderQuantity='10'):
-        super(InventoryItem, self).__init__(itemId, name)
-        self.category = category
-        self.actQuantity = actQuantity
-        self.ecoOrderQuantity = ecoOrderQuantity
-
-    def getQuantity(self):
-        print(self.itemId, self.name, self.actQuantity)
-
-    def setQuantity(self, qnty):
-        self.actQuantity = qnty
-
-    def checkQuantity(self):
-        if int(self.actQuantity) <= 10:
-            print("Quantity left in the inventory for the category %s : %s" %
-                  (self.category, self.actQuantity))
-            return self.category
-
-
 class Notice:
 
-    def __init__(self, shipmentNumber, supplierName, itemDetails, quantityDetails):
+    def __init__(self, shipmentNumber, supplierName, itemDetails, itemSpec, quantityDetails):
         self.shipmentNumber = shipmentNumber
         self.supplierName = supplierName
         self.itemDetails = itemDetails
         self.quantityDetails = quantityDetails
+        self.itemSpec = itemSpec
 
     def _generateNotice(self, dep, errorDetails):
-        print("The following notice is issued by %s and the error details are as follows:\nShipment Number: %s\nSupplier Name: %s\nItem details: %s\nQuantity Details: %s\nError: %s" % (
-            dep, self.shipmentNumber, self.supplierName, self.itemDetails, self.quantityDetails, errorDetails))
+        print("*****Error******\nThe following notice is issued by %s\n%s\nThe error details are as follows:\nShipment Number: %s\nSupplier Name: %s\nItem Specification: %s\nQuantity Details: %s\n" %
+              (dep, errorDetails, self.shipmentNumber, self.supplierName, self.itemSpec, self.quantityDetails), end='')
+        print("Item Details: %s " % ', '.join(map(str, self.itemDetails)))
 
 
 class Supplier:
@@ -67,6 +35,7 @@ class Supplier:
 
     @staticmethod
     def searchSupplier(stock):
+        print("\n---Purchase order assigned to the supplier---\n")
         return [Supplier.supplierDict[key] for key in Supplier.supplierDict if stock == key]
 
 
@@ -97,8 +66,7 @@ class PurchaseOrder:
 
     def generatePo(self):
         self.orderDate = datetime.date.today()
-        print("The purchase order:\nOrder No: %s\nMedicine name: %s\nQuantity: %s\nDate: %s" % (
-            self.poNumber, self._items, self._quantity, self.orderDate))
+        print("\n---Purchase Department places an purchase order---\n")
         return [self.poNumber, self._items, self._quantity, self.orderDate]
 
     def updatePo(self, val1='', val2=''):
@@ -115,81 +83,33 @@ class PurchaseOrder:
             self.poNumber, self._items, self._quantity, self.orderDate))
 
 
-class Staff:
-
-    def __init__(self, empid, name):
-        self.empid = empid
-        self.name = name
-
-
-class SrClerk(Staff, Notice):
-
-    def __init__(self, empid, name, shipmentNumber, supplierName, itemDetails, quantityDetails):
-        # super(SrClerk, self).__init__(empid, name)
-        Staff.__init__(self, empid, name)
-        Notice.__init__(self, shipmentNumber, supplierName,
-                        itemDetails, quantityDetails)
-
-    def generateErrorNotice(self, name='SRCLERK', msg=''):
-        if msg != '':
-            msg = 'Mismatch in purchase order and shipment'
-            self._generateNotice(name, msg)
-
-    def verifyShipment(self):
-        self.generateErrorNotice()
-
-
-class Inspector(SrClerk):
-
-    def __init__(self, empid, name, shipmentNumber, supplierName, itemDetails, quantityDetails):
-        super(Inspector, self).__init__(empid, name, shipmentNumber,
-                                        supplierName, itemDetails, quantityDetails)
-
-    def inspect(self):
-        pass
-
-
 class Shipment:
     shipmentNumber = 7887643  # some random number
 
-    def __init__(self, itemDetails, quantity):
+    def __init__(self, itemDetails, expiry, quantity):
 
         self.itemDetails = itemDetails
         self.quantity = quantity
+        self.expiry = expiry
         Shipment.shipmentNumber += 1
 
     def getShipment(self):
-        print ("Shipment is on the way to SRClerk")
-
-
-class InventoryClerk(Staff):
-
-    def __init__(self, inventoryName, inventoryId):
-        super(Inspector, self).__init__(inventoryName, inventoryId)
-
-    def checkInventory(self):
-        pass
-
-    def updateInventory(self):
-        pass
-
-# class PurchaseClerk(Staff):
-#     def __init__(self,):
-
-#     def
-#         pass
+        print("\n---Supplier delivers the shipment---\n")
 
 
 class Bill:
-    billNumber = 23456 # some randome number
+    billNumber = 23456  # some randome number
+
     def __init__(self, totalAmt, itemDetails):
         self.Date = datetime.date.today()
         self.totalAmt = totalAmt
         self.itemDetails = itemDetails
         Bill.billNumber += 1
+        print("\n---Supplier gives the Bill---\n")
 
     def generateBill(self):
-        pass
+        print("Billing:\nBill Number:%s\nDate:%s\nAmount:%s\nItem Details:%s" %
+              (self.billNumber, self.Date, self.totalAmt, self.itemDetails))
 
 
 class QualityCriteria:
@@ -198,9 +118,11 @@ class QualityCriteria:
         self.itemNumber = itemNumber
         self.itemName = itemName
         self.qualitySpecs = qualitySpecs
+        print("\n---Quality spec is created for Inspection---\n")
 
     def displayQualitySpecs(self):
-        pass
+        print("Quality specifications: \n Item Numer: % s\nItem Name: % s\nQuality spec: %s" % (
+            self.itemNumber, self.itemName, self.qualitySpecs))
 
 
 class AcceptedItem:
@@ -209,6 +131,7 @@ class AcceptedItem:
         self.itemNumber = itemNumber
         self.itemName = itemName
         self.quantity = quantity
+        print("\n---Inspector prepares accepted item---\n")
 
-    def updateQuantity(self):
-        pass
+    def updateQuantity(self, other):
+        return self.quantity + other.actQuantity
