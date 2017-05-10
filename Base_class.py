@@ -1,13 +1,14 @@
-from Inventory import SrClerk, InventoryItem, Supplier, PurchaseOrder, Staff, Shipment, Bill
+import sys
+sys.path.append('./Inventory')
+from Staff import *
+from Item import InventoryItem
+from Inventory import Supplier, PurchaseOrder, Shipment, Bill, QualityCriteria, InventoryClerk, AcceptedItem
 
-# InventoryItem.items = { 'id' : 001 , 'cat' : 'fruits', 'name':'apple', 'actqua' : 10, 'ecordqua' : 20
-# }
-# #notice = Notice('Abn1', 'corp1', 'book', '5')
-
-painkillers = InventoryItem('003', 'tablet', 'Painkillers', '10', '10')
-antibiotics = InventoryItem('001', 'syrup', 'Anitbiotics', '5', '10')
-antiseptics = InventoryItem('002', 'injection', 'Antiseptics', '25', '10')
-antipyretics = InventoryItem('002', 'capsule', 'Antipyretics', '15', '10')
+# all this data has to be read from utility file
+painkillers = InventoryItem('003', 'tablet', 'Painkillers', 10, 10)
+antibiotics = InventoryItem('001', 'syrup', 'Anitbiotics', 25, 10)
+antiseptics = InventoryItem('002', 'injection', 'Antiseptics', 25, 10)
+antipyretics = InventoryItem('004', 'capsule', 'Antipyretics', 25, 10)
 
 sup_cmpy1 = Supplier('001', 'sup_cmpy1', 'Bangalore', '23454', 'Antiseptics')
 sup_cmpy2 = Supplier('002', 'sup_cmpy2', 'Chennai', '34524', 'Antipyretics')
@@ -17,54 +18,55 @@ sup_cmpy4 = Supplier('004', 'sup_cmpy4', 'Hosur', '56785', 'Painkillers')
 stockList = [painkillers, antibiotics, antiseptics, antipyretics]
 
 
-class PurchaseClerk(Staff):
+purchaseclk = PurchaseClerk('432', 'PRCLERK')
 
-    def __init__(self, empid, name):
-        super(PurchaseClerk, self).__init__(empid, name)
+category = purchaseclk.checkInventory(stockList)
 
-    def checkInventory(self):
-        category = []
-        for invitem in stockList:
-            cat = invitem.checkQuantity()
-            if cat:
-                category.append(cat)
-        return category
-
-purchaseCheck = PurchaseClerk('432', 'PRCLERK')
-
-category = purchaseCheck.checkInventory()
-print("Category", category)
 
 # generates the PO
 if category:
-    #purchseOrder = {}
-    suplist = []
-    for x in category:
+
+    for x, y in category.items():
         pOrd = PurchaseOrder(x, 20)
         pOrd.generatePo()
-        #print ("porder:", pOrd.items)
+
         suplist = Supplier.searchSupplier(pOrd.items)
-        print ("Suplist", suplist)
+
         if suplist:
-            shpment = Shipment([pOrd.poNumber, pOrd.items, pOrd.orderDate], pOrd.quantity)
+            shpment = Shipment(
+                [pOrd.poNumber, pOrd.items, pOrd.orderDate], '6Months', pOrd.quantity)
             shpment.getShipment()
-            billing = Bill(100 , shpment.itemDetails)
-            print (shpment.itemDetails)
-            print (billing.itemDetails)
-            print (pOrd.poNumber, pOrd.items, pOrd.orderDate, pOrd.orderDate)
-# painkillers.checkQuantity()
-#print (Supplier.searchSupplier('Painkillers'))
-#po = PurchaseOrder('435', 'tablet', '10')
 
-# po.generatePo()
-#po.updatePo('glucose', '25')
+            # shpment.itemDetails = []  # ---> to check wrong billing
+            billing = Bill(100, shpment.itemDetails)
 
-# Supplier.searchSupplier('painkillers')
+            srclrk = SrClerk("3", "ram", shpment.shipmentNumber, suplist[
+                             0][1], [pOrd.poNumber, pOrd.items, pOrd.orderDate], y.name,  pOrd.quantity)
 
-#painkillers.setQuantity('002', '60')
+            src_ret = srclrk.verifyShipment(billing)
 
-#srclrk = SrClerk("3", "ram", '1024', 'acb shipng', 'Books', '5')
+            if src_ret != 0:
 
+                qualspec = QualityCriteria(
+                    pOrd.poNumber, suplist[0][1], '6Months')
 
-#notice.generateNotice('srclerk', 'Ordered book. But pens are supplied.')
-# srclrk.verifyShipment()
+                ins = Inspector("23", "QCIns", shpment.shipmentNumber, suplist[
+                    0][1], [pOrd.poNumber, pOrd.items, pOrd.orderDate], y.name,  pOrd.quantity)
+
+                ins_ret = ins.inspect(qualspec.qualitySpecs, shpment)
+
+                if ins_ret != 0:
+                    ac_it = AcceptedItem(y.itemId, y.name, ins.quantityDetails)
+                    updated_quantity = ac_it.updateQuantity(y)
+                    inv_clerk = InventoryClerk(345, "INVClerk")
+                    updated_inv = inv_clerk.updateInventory(
+                        y, updated_quantity)
+
+                    print("Updated iventory list:\nID:%s\nMedicine Name: %s\nCategory: %s\nUpdated Quantity: %s\nEco Quantity:%s" % (
+                        updated_inv.itemId, updated_inv.name, updated_inv.category, updated_inv.actQuantity, updated_inv.ecoOrderQuantity))
+                else:
+                    continue
+            else:
+                continue
+else:
+    print("All the items in the inventory are above the threshold value")
