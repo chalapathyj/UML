@@ -159,7 +159,7 @@ class Shipment:
         Shipment.shipmentNumber += 1
 
     def getShipment(self):
-        pass
+        print ("Shipment is on the way to SRClerk")
 
 
 class InventoryClerk(Staff):
@@ -181,12 +181,12 @@ class InventoryClerk(Staff):
 
 
 class Bill:
-
-    def __init__(self, billNumber, Date, totalAmt, itemDetails):
-        self.billNumber = billNumber
-        self.Date = Date
+    billNumber = 23456 # some randome number
+    def __init__(self, totalAmt, itemDetails):
+        self.Date = datetime.date.today()
         self.totalAmt = totalAmt
         self.itemDetails = itemDetails
+        Bill.billNumber += 1
 
     def generateBill(self):
         pass
