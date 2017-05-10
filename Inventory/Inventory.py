@@ -60,10 +60,10 @@ class Supplier:
         # appending more than one supplier for a stock.
         try:
             self.supplierDict[self.typeOfStock].append(
-                [self.supplierId, self.supplierName, self.address, self.phoneNumber])
+                [self.supplierId, self.supplierName, self.typeOfStock, self.address, self.phoneNumber])
         except KeyError:
             self.supplierDict[self.typeOfStock] = [
-                self.supplierId, self.supplierName, self.address, self.phoneNumber]
+                self.supplierId, self.supplierName, self.typeOfStock, self.address, self.phoneNumber]
 
     @staticmethod
     def searchSupplier(stock):
@@ -99,6 +99,7 @@ class PurchaseOrder:
         self.orderDate = datetime.date.today()
         print("The purchase order:\nOrder No: %s\nMedicine name: %s\nQuantity: %s\nDate: %s" % (
             self.poNumber, self._items, self._quantity, self.orderDate))
+        return [self.poNumber, self._items, self._quantity, self.orderDate]
 
     def updatePo(self, val1='', val2=''):
         if val1 != '':
@@ -149,11 +150,13 @@ class Inspector(SrClerk):
 
 
 class Shipment:
+    shipmentNumber = 7887643  # some random number
 
-    def __init__(self, shipmentNumber, itemDetails, quantity):
-        self.shipmentNumber = shipmentNumber
+    def __init__(self, itemDetails, quantity):
+
         self.itemDetails = itemDetails
         self.quantity = quantity
+        Shipment.shipmentNumber += 1
 
     def getShipment(self):
         pass
