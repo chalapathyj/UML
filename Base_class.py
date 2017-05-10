@@ -16,7 +16,8 @@ sup_cmpy3 = Supplier('003', 'sup_cmpy3', 'Mangalore', '65768', 'Anitbiotics')
 sup_cmpy4 = Supplier('004', 'sup_cmpy4', 'Hosur', '56785', 'Painkillers')
 
 stockList = [painkillers, antibiotics, antiseptics, antipyretics]
-
+expiry = '4Months'
+shpexpiry = '6Months'
 
 purchaseclk = PurchaseClerk('432', 'PRCLERK')
 
@@ -34,7 +35,7 @@ if category:
 
         if suplist:
             shpment = Shipment(
-                [pOrd.poNumber, pOrd.items, pOrd.orderDate], '6Months', pOrd.quantity)
+                [pOrd.poNumber, pOrd.items, pOrd.orderDate], shpexpiry, pOrd.quantity)
             shpment.getShipment()
 
             # shpment.itemDetails = []  # ---> to check wrong billing
@@ -48,7 +49,7 @@ if category:
             if src_ret != 0:
 
                 qualspec = QualityCriteria(
-                    pOrd.poNumber, suplist[0][1], '6Months')
+                    pOrd.poNumber, suplist[0][1], expiry)
 
                 ins = Inspector("23", "QCIns", shpment.shipmentNumber, suplist[
                     0][1], [pOrd.poNumber, pOrd.items, pOrd.orderDate], y.name,  pOrd.quantity)
