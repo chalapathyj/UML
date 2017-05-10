@@ -1,4 +1,4 @@
-from Inventory import SrClerk, InventoryItem, Supplier, PurchaseOrder, Staff
+from Inventory import SrClerk, InventoryItem, Supplier, PurchaseOrder, Staff, Shipment, Bill
 
 # InventoryItem.items = { 'id' : 001 , 'cat' : 'fruits', 'name':'apple', 'actqua' : 10, 'ecordqua' : 20
 # }
@@ -38,15 +38,20 @@ print("Category", category)
 # generates the PO
 if category:
     #purchseOrder = {}
-    #suplist = []
+    suplist = []
     for x in category:
-        pOrd = PurchaseOrder(x, 20).generatePo()
-        purchseOrder[pOrd[0]] = pOrd[1:]
-        suplist = Supplier.searchSupplier(pOrd[1])
+        pOrd = PurchaseOrder(x, 20)
+        pOrd.generatePo()
+        #print ("porder:", pOrd.items)
+        suplist = Supplier.searchSupplier(pOrd.items)
+        print ("Suplist", suplist)
         if suplist:
-            shpment = Shipment([], pOrd[2])
-print ("Suplist", suplist)
-
+            shpment = Shipment([pOrd.poNumber, pOrd.items, pOrd.orderDate], pOrd.quantity)
+            shpment.getShipment()
+            billing = Bill(100 , shpment.itemDetails)
+            print (shpment.itemDetails)
+            print (billing.itemDetails)
+            print (pOrd.poNumber, pOrd.items, pOrd.orderDate, pOrd.orderDate)
 # painkillers.checkQuantity()
 #print (Supplier.searchSupplier('Painkillers'))
 #po = PurchaseOrder('435', 'tablet', '10')
