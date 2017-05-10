@@ -3,6 +3,7 @@ from Inventory import SrClerk, InventoryItem, Supplier, PurchaseOrder, Staff
 # InventoryItem.items = { 'id' : 001 , 'cat' : 'fruits', 'name':'apple', 'actqua' : 10, 'ecordqua' : 20
 # }
 # #notice = Notice('Abn1', 'corp1', 'book', '5')
+
 painkillers = InventoryItem('003', 'tablet', 'Painkillers', '10', '10')
 antibiotics = InventoryItem('001', 'syrup', 'Anitbiotics', '5', '10')
 antiseptics = InventoryItem('002', 'injection', 'Antiseptics', '25', '10')
@@ -33,11 +34,19 @@ purchaseCheck = PurchaseClerk('432', 'PRCLERK')
 
 category = purchaseCheck.checkInventory()
 print("Category", category)
-# generates the PO 
+
+# generates the PO
 if category:
-	for x in category:
-		PurchaseOrder(x, 20).generatePo()
-		
+    #purchseOrder = {}
+    #suplist = []
+    for x in category:
+        pOrd = PurchaseOrder(x, 20).generatePo()
+        purchseOrder[pOrd[0]] = pOrd[1:]
+        suplist = Supplier.searchSupplier(pOrd[1])
+        if suplist:
+            shpment = Shipment([], pOrd[2])
+print ("Suplist", suplist)
+
 # painkillers.checkQuantity()
 #print (Supplier.searchSupplier('Painkillers'))
 #po = PurchaseOrder('435', 'tablet', '10')
