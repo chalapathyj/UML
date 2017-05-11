@@ -29,5 +29,5 @@ class InventoryItem(Item):
         if int(self.actQuantity) <= 10:
 
             print("Quantity less than the threshold(less or eq to 10) in the inventory:\nID:%s\nMedicine Name: %s\nCategory: %s\nUpdated Quantity: %s\nEco Quantity:%s" % (
-                        self.itemId, self.name, self.category, self.actQuantity, self.ecoOrderQuantity))
+                self.itemId, self.name, self.category, self.actQuantity, self.ecoOrderQuantity))
             return self.category
