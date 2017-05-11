@@ -1,0 +1,11 @@
+Guidelines in development of OO programs
+****************************************
+Develop .h and .cpp file for each class.
+Each .h file to have guards to prevent its multiple inclusion.
+Each .cpp file must include its own .h file. This is direct dependancy.
+The .h file of derived class must include the .h file of its base class.
+If any implementation in X.cpp file depends on Y.h, include Y.h in X.h and not in X.cpp – This is to avoid cross dependencies problems.
+If you face circular dependancies issue, try breaking up the culprit .h file into multiple .h files.
+Create a dependancy matrix in an excel sheet. All the dependancies ("Y"s) should be either in the upper triangle or lower triangle; not in both the traingles. If so, there exist a circular dependancy.
+Normally, in every project, one should be able to identify a common header file. If not, one can create such a new header file. (just like a typedefs.h).
+Move all the forward declarations there and include this 
