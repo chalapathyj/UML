@@ -9,3 +9,6 @@ If you face circular dependancies issue, try breaking up the culprit .h file int
 Create a dependancy matrix in an excel sheet. All the dependancies ("Y"s) should be either in the upper triangle or lower triangle; not in both the traingles. If so, there exist a circular dependancy.
 Normally, in every project, one should be able to identify a common header file. If not, one can create such a new header file. (just like a typedefs.h).
 Move all the forward declarations there and include this 
+Create your own Logger class which will log all the debug messages in a log file.
+We should be enable or disable logging with a control from a one place only.
+Handle exception using exception handling techniques.
