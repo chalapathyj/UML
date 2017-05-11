@@ -8,7 +8,7 @@ from Inventory import Supplier, PurchaseOrder, Shipment, Bill, QualityCriteria, 
 painkillers = InventoryItem('003', 'tablet', 'Painkillers', 10, 10)
 antibiotics = InventoryItem('001', 'syrup', 'Anitbiotics', 25, 10)
 antiseptics = InventoryItem('002', 'injection', 'Antiseptics', 25, 10)
-antipyretics = InventoryItem('004', 'capsule', 'Antipyretics', 25, 10)
+antipyretics = InventoryItem('004', 'capsule', 'Antipyretics', 45, 10)
 
 sup_cmpy1 = Supplier('001', 'sup_cmpy1', 'Bangalore', '23454', 'Antiseptics')
 sup_cmpy2 = Supplier('002', 'sup_cmpy2', 'Chennai', '34524', 'Antipyretics')
@@ -30,16 +30,19 @@ if category:
     for x, y in category.items():
         pOrd = PurchaseOrder(x, 20)
         pOrd.generatePo()
+        pOrd.displayPo()
 
         suplist = Supplier.searchSupplier(pOrd.items)
 
         if suplist:
+            print("Supplier details:", suplist[0])
             shpment = Shipment(
                 [pOrd.poNumber, pOrd.items, pOrd.orderDate], shpexpiry, pOrd.quantity)
             shpment.getShipment()
 
             # shpment.itemDetails = []  # ---> to check wrong billing
             billing = Bill(100, shpment.itemDetails)
+            billing.generateBill()
 
             srclrk = SrClerk("3", "ram", shpment.shipmentNumber, suplist[
                              0][1], [pOrd.poNumber, pOrd.items, pOrd.orderDate], y.name,  pOrd.quantity)
@@ -50,6 +53,7 @@ if category:
 
                 qualspec = QualityCriteria(
                     pOrd.poNumber, suplist[0][1], expiry)
+                qualspec.displayQualitySpecs()
 
                 ins = Inspector("23", "QCIns", shpment.shipmentNumber, suplist[
                     0][1], [pOrd.poNumber, pOrd.items, pOrd.orderDate], y.name,  pOrd.quantity)
@@ -58,10 +62,12 @@ if category:
 
                 if ins_ret != 0:
                     ac_it = AcceptedItem(y.itemId, y.name, ins.quantityDetails)
+                    ac_it.acceptItem()
+
                     updated_quantity = ac_it.updateQuantity(y)
+
                     inv_clerk = InventoryClerk(345, "INVClerk")
-                    updated_inv = inv_clerk.updateInventory(
-                        y, updated_quantity)
+                    updated_inv = inv_clerk.updateInventory(y, ac_it)
 
                     print("Updated iventory list:\nID:%s\nMedicine Name: %s\nCategory: %s\nUpdated Quantity: %s\nEco Quantity:%s" % (
                         updated_inv.itemId, updated_inv.name, updated_inv.category, updated_inv.actQuantity, updated_inv.ecoOrderQuantity))
