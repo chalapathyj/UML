@@ -95,6 +95,8 @@ class Shipment:
 
     def getShipment(self):
         print("\n---Supplier delivers the shipment---\n")
+        print("Shipping details: ", (self.shipmentNumber,
+                                     self.itemDetails, self.quantity, self.expiry))
 
 
 class Bill:
@@ -121,7 +123,7 @@ class QualityCriteria:
         print("\n---Quality spec is created for Inspection---\n")
 
     def displayQualitySpecs(self):
-        print("Quality specifications: \n Item Numer: % s\nItem Name: % s\nQuality spec: %s" % (
+        print("Quality specifications: \nItem Numer: % s\nItem Name: % s\nQuality spec: %s" % (
             self.itemNumber, self.itemName, self.qualitySpecs))
 
 
@@ -132,6 +134,10 @@ class AcceptedItem:
         self.itemName = itemName
         self.quantity = quantity
         print("\n---Inspector prepares accepted item---\n")
+
+    def acceptItem(self):
+        print("Accepted item details: %s" %
+              [self.itemNumber, self.itemName, self.quantity])
 
     def updateQuantity(self, other):
         return self.quantity + other.actQuantity
